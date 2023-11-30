@@ -24,18 +24,18 @@ public final class Constants {
 
   public static final class ModuleConstants {
     public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-    public static final double kDriveMotorGearRatio = 1/5.8462;
-    public static final double kTurningMotorGearRatio = 1/18.0;
+    // Level1 Standard Gear Ratios
+    // https://www.andymark.com/products/mk4i-swerve-modules
+    public static final double kDriveMotorGearRatio = 1 / 8.14;
+    public static final double kTurningMotorGearRatio = 1 / 21.43; // 150/7 : 1 gear ratio
     public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
     public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
     public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
     public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60;
     public static final double kPTurning = 0.5;
-    // edit these for our own modules, theres are copied from the video because we are incompetent and lazy 
   }
 
   public static final class DriveConstants {
-
     public static final double kTrackWidth = Units.inchesToMeters(21);
     // Distance between right and left wheels
     public static final double kWheelBase = Units.inchesToMeters(25.5);
