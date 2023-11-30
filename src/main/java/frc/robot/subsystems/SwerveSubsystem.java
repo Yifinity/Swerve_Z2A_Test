@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -18,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
-  /** Creates a new SwerveSubsystem. */
+  // Define the four modules
   private final SwerveModule frontLeft = new SwerveModule(
     DriveConstants.kFrontLeftDriveMotorPort,
     DriveConstants.kFrontLeftTurningMotorPort,
@@ -56,11 +55,14 @@ public class SwerveSubsystem extends SubsystemBase {
     DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-  private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getRotation2d(), new SwerveModulePosition[] {
-    frontLeft.getPosition(),
-    frontRight.getPosition(),
-    backLeft.getPosition(),
-    backRight.getPosition()
+  private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
+    DriveConstants.kDriveKinematics, 
+    getRotation2d(),
+    new SwerveModulePosition[] {
+      frontLeft.getPosition(),
+      frontRight.getPosition(),
+      backLeft.getPosition(),
+      backRight.getPosition()
   });
 
 
