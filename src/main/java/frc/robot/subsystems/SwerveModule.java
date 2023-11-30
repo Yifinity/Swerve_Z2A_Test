@@ -13,7 +13,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -24,29 +23,24 @@ public class SwerveModule extends SubsystemBase {
   private final CANSparkMax driveMotor;
   private final CANSparkMax turningMotor;
 
-  // Get the the encoders for the drive and turn motors
-  // Encoders: track how many rotations the motor does
-  private final RelativeEncoder driveEncoder; //gets the encoder in the motor
+  private final RelativeEncoder driveEncoder;
   private final RelativeEncoder turningEncoder;
 
   // Creates the PID Controller for turning the motors
   private final PIDController turningPidController;
 
   // absolute encoders track the position of the motor regardless of power cycles
-  //
-  //
-  //
-  //
   private final CANCoder canCoder;
   private final boolean absoluteEncoderReversed;
   private final double absoluteEncoderOffsetRad;
 
+  // Public constructor that takes in ids, offsets, and whether the motors are reversed. 
   public SwerveModule(int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed, int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
-    // specifies which variable it's refrencing - the one tha
+    // Offset of the absolute encoder should be value that is passed in. 
     this.absoluteEncoderOffsetRad =  absoluteEncoderOffset;
     this.absoluteEncoderReversed = absoluteEncoderReversed;
-    canCoder = new CANCoder(absoluteEncoderId);
 
+    canCoder = new CANCoder(absoluteEncoderId);
     driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
     turningMotor = new CANSparkMax(turningMotorId, MotorType.kBrushless);
 
@@ -56,16 +50,15 @@ public class SwerveModule extends SubsystemBase {
     driveEncoder = driveMotor.getEncoder();
     turningEncoder = turningMotor.getEncoder();
 
-    // change the constants later
     driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
     driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
     turningEncoder.setPositionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad);
     turningEncoder.setVelocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec);
 
-    // PID Controller with P value. 
     turningPidController = new PIDController(ModuleConstants.kPTurning, 0, 0);
-    turningPidController.enableContinuousInput(-Math.PI, Math.PI);
 
+    // Min and max points are considered to be the same point; encoder values are continous around a full circle
+    turningPidController.enableContinuousInput(-Math.PI, Math.PI);
     resetEncoders();
   }
 
@@ -86,34 +79,40 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public double getAbsoluteEncoderRad() {
-    double angle = canCoder.getBusVoltage() / RobotController.getVoltage5V();
+    double angle = canCoder.getAbsolutePosition(); 
     angle *= 2.0 * Math.PI;
     angle -= absoluteEncoderOffsetRad;
+    // Set angle to be multiplied by -1 if the it's reversed
     return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
   }
 
   public void resetEncoders() {
     driveEncoder.setPosition(0);
-    turningEncoder.setPosition(getAbsoluteEncoderRad());
+    turningEncoder.setPosition(getAbsoluteEncoderRad()); // Takes in rotation found by absolute encoder. 
   }
 
+  // Return module's drive and turning positions. 
+  public SwerveModulePosition getPosition(){
+    return new SwerveModulePosition(driveEncoder.getPosition(), new Rotation2d(getTurningPosition()));
+  }
+
+  // Return a vector-like state that has velocity and angle as magnitude and angle. 
   public SwerveModuleState getState() {
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition())); 
   }
-  
+
+    // Method that translate desired state to angle rotations and speed. 
   public void setDesiredState(SwerveModuleState state) {
     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
       stop();
       return;
     }
+
+    // Ensure that max rotation for turning motor is 90 degrees. 
     state = SwerveModuleState.optimize(state, getState().angle);
-    driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond /*AAAAAAAAAAHHHHHHHHH */);
+    driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
     SmartDashboard.putString("Swerve[" + canCoder.getDeviceID() + "] state", state.toString());
-  }
-
-  public SwerveModulePosition getPosition(){
-    return new SwerveModulePosition(driveEncoder.getPosition(), new Rotation2d(getTurningPosition()));
   }
   
   public void stop() {
@@ -121,10 +120,7 @@ public class SwerveModule extends SubsystemBase {
     turningMotor.set(0);
   }
 
-
-
   @Override
   public void periodic() {
-    
   }
 }
