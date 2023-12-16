@@ -65,8 +65,9 @@ public class SwerveSubsystem extends SubsystemBase {
       backRight.getPosition()
   });
 
-
+  
   public SwerveSubsystem() {
+    // In the constructer, wait a second, then update the gyro (it will have been booted up by then).
     new Thread(() -> {
       try {
         Thread.sleep(1000);
@@ -77,32 +78,35 @@ public class SwerveSubsystem extends SubsystemBase {
     }).start();
   }
 
-  public double getHeading () {
-    return Math.IEEEremainder(gyro.getAngle(), 360);
-
-  }
-  
-  public Rotation2d getRotation2d() {
-  return Rotation2d.fromDegrees(getHeading()); 
-  }
-  
-  public Pose2d getPose() {
-  return odometer.getPoseMeters();
-  }
-
-  public void resetOdometry(Pose2d pose) {
-    odometer.resetPosition(getRotation2d(), new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()
-    }, pose);
-  }
-  
   public void zeroHeading () {
     gyro.reset();
   }
 
+  // Take the of the gyro by taking the reminder of the reading divided by 360  
+  public double getHeading () {
+    return Math.IEEEremainder(gyro.getAngle(), 360);
+  }
+  
+  // Translate the heading to a 2D rotation object. 
+  public Rotation2d getRotation2d() {
+    return Rotation2d.fromDegrees(getHeading()); 
+  }
+  
+  public Pose2d getPose() {
+    return odometer.getPoseMeters();
+  }
+
+  // Reset the odometry with the rotation, positions, and current pose. 
+  // Reference code: https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-odometry.html
+  public void resetOdometry(Pose2d pose) {
+      odometer.resetPosition(getRotation2d(), new SwerveModulePosition[] {
+      frontLeft.getPosition(),
+      frontRight.getPosition(),
+      backLeft.getPosition(),
+      backRight.getPosition()
+    }, pose);  
+  }
+  
   @Override
   public void periodic() {
     odometer.update(getRotation2d(), new SwerveModulePosition[] {
@@ -111,7 +115,28 @@ public class SwerveSubsystem extends SubsystemBase {
       backLeft.getPosition(),
       backRight.getPosition()
     });
+
     SmartDashboard.putNumber("Robot Heading", getHeading());
+    SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+    SmartDashboard.putNumber("EncoderFL", frontLeft.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("EncoderFR", frontRight.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("EncoderBL", backLeft.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("EncoderBR", backRight.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("FL Speed", frontLeft.getDriveVelocity());
+    SmartDashboard.putNumber("FR Speed", frontRight.getDriveVelocity());  
+    SmartDashboard.putNumber("BL Speed", backLeft.getDriveVelocity());
+    SmartDashboard.putNumber("BR Speed", backRight.getDriveVelocity());
+    SmartDashboard.putNumber("FL Drive Position", frontLeft.getDrivePosition());
+    SmartDashboard.putNumber("FR Drive Position", frontRight.getDrivePosition());
+    SmartDashboard.putNumber("BL Drive Position", backLeft.getDrivePosition());
+    SmartDashboard.putNumber("FL Drive Position", frontLeft.getDrivePosition());
+    SmartDashboard.putNumber("BR Drive Position", backRight.getDrivePosition());
+
+    // SmartDashboard.putNumber("FLTurnPosition", frontLeft.getTurningPosition());
+    // SmartDashboard.putNumber("FRTurnPosition", frontRight.getTurningPosition());
+    // SmartDashboard.putNumber("BLTurnPosition", backLeft.getTurningPosition());
+    // SmartDashboard.putNumber("BRTurnPosition", backRight.getTurningPosition());
+
   }
 
 public void stopModules(){
@@ -122,11 +147,12 @@ public void stopModules(){
 }
 
 public void setModuleStates(SwerveModuleState[] desiredStates) {
+  // Update desired speeds to be constrained to a max speed. 
+  // https://github.com/SwerveDriveSpecialties/Do-not-use-swerve-template-2021-unmaintained/issues/8
   SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond); // chiefdelphi.com/t/normalizewheelspeeds/411155
   frontLeft.setDesiredState(desiredStates[0]);
   frontRight.setDesiredState(desiredStates[1]);
   backLeft.setDesiredState(desiredStates[2]);
   backRight.setDesiredState(desiredStates[3]);
 }
-
 }
