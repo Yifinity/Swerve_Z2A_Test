@@ -13,6 +13,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -43,6 +44,8 @@ public class SwerveModule extends SubsystemBase {
     canCoder = new CANCoder(absoluteEncoderId);
     driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
     turningMotor = new CANSparkMax(turningMotorId, MotorType.kBrushless);
+
+    canCoder.
 
     driveMotor.setInverted(driveMotorReversed);
     turningMotor.setInverted(turningMotorReversed);
@@ -80,8 +83,8 @@ public class SwerveModule extends SubsystemBase {
 
   public double getAbsoluteEncoderRad() {
     double angle = canCoder.getAbsolutePosition(); 
-    angle *= 2.0 * Math.PI;
-    angle -= absoluteEncoderOffsetRad;
+     angle = Units.degreesToRadians(angle);
+     angle -= absoluteEncoderOffsetRad;
     // Set angle to be multiplied by -1 if the it's reversed
     return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
   }
@@ -110,9 +113,10 @@ public class SwerveModule extends SubsystemBase {
 
     // Ensure that max rotation for turning motor is 90 degrees. 
     state = SwerveModuleState.optimize(state, getState().angle);
-    driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
-    turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
-    SmartDashboard.putString("Swerve[" + canCoder.getDeviceID() + "] state", state.toString());
+    // driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+    // turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
+    SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] turn", turningPidController.calculate(getTurningPosition()));
+    SmartDashboard.putString("Swerve[" + driveMotor.getDeviceId() + "] state", state.toString());
   }
   
   public void stop() {
