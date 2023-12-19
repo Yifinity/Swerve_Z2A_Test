@@ -118,19 +118,21 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("Robot Heading", getHeading());
     SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
-    SmartDashboard.putNumber("EncoderFL", frontLeft.getAbsoluteEncoderRad());
-    SmartDashboard.putNumber("EncoderFR", frontRight.getAbsoluteEncoderRad());
-    SmartDashboard.putNumber("EncoderBL", backLeft.getAbsoluteEncoderRad());
-    SmartDashboard.putNumber("EncoderBR", backRight.getAbsoluteEncoderRad());
-    SmartDashboard.putNumber("FL Speed", frontLeft.getDriveVelocity());
-    SmartDashboard.putNumber("FR Speed", frontRight.getDriveVelocity());  
-    SmartDashboard.putNumber("BL Speed", backLeft.getDriveVelocity());
-    SmartDashboard.putNumber("BR Speed", backRight.getDriveVelocity());
-    SmartDashboard.putNumber("FL Drive Position", frontLeft.getDrivePosition());
-    SmartDashboard.putNumber("FR Drive Position", frontRight.getDrivePosition());
-    SmartDashboard.putNumber("BL Drive Position", backLeft.getDrivePosition());
-    SmartDashboard.putNumber("FL Drive Position", frontLeft.getDrivePosition());
-    SmartDashboard.putNumber("BR Drive Position", backRight.getDrivePosition());
+
+    SmartDashboard.putNumber("Front Left Absolute Encoder", frontLeft.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Front Right Absolute Encoder", frontRight.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Back Left Absolute Encoder", backLeft.getAbsoluteEncoderRad());
+    SmartDashboard.putNumber("Back Right Absolute Encoder", backRight.getAbsoluteEncoderRad());
+    
+    SmartDashboard.putNumber("Front Left Relative Encoder", frontLeft.getTurningPosition());
+    SmartDashboard.putNumber("Front Right Relative Encoder", frontRight.getTurningPosition());
+    SmartDashboard.putNumber("Back Left Relative Encoder", backLeft.getTurningPosition());
+    SmartDashboard.putNumber("Back Right Relative Encoder", backRight.getTurningPosition());
+
+    SmartDashboard.putNumber("Front Left Drive Position", frontLeft.getDrivePosition());
+    SmartDashboard.putNumber("Front Right Drive Position", frontRight.getDrivePosition());
+    SmartDashboard.putNumber("Back Left Drive Position", backLeft.getDrivePosition());
+    SmartDashboard.putNumber("Back Right Drive Position", backRight.getDrivePosition());
 
     // SmartDashboard.putNumber("FLTurnPosition", frontLeft.getTurningPosition());
     // SmartDashboard.putNumber("FRTurnPosition", frontRight.getTurningPosition());
