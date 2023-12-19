@@ -38,9 +38,7 @@ public class SwerveModule extends SubsystemBase {
   // Public constructor that takes in ids, offsets, and whether the motors are reversed. 
   public SwerveModule(int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed, int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
     // Offset of the absolute encoder should be value that is passed in. 
-    this.absoluteEncoderOffsetRad =  absoluteEncoderOffset;
     this.absoluteEncoderReversed = absoluteEncoderReversed;
-
     canCoder = new CANCoder(absoluteEncoderId);
 
     // Sets the offset such that the encoder goes back to -180 degrees at the correct time. 
