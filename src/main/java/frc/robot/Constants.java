@@ -36,9 +36,9 @@ public final class Constants {
   }
 
   public static final class DriveConstants {
-    public static final double kTrackWidth = Units.inchesToMeters(21);
+    public static final double kTrackWidth = Units.inchesToMeters(20.5);
     // Distance between right and left wheels
-    public static final double kWheelBase = Units.inchesToMeters(25.5);
+    public static final double kWheelBase = Units.inchesToMeters(27);
   
     // Distance between front and back wheels
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -57,10 +57,10 @@ public final class Constants {
     public static final int kFrontRightTurningMotorPort = 5;
     public static final int kBackRightTurningMotorPort = 3;
 
-    public static final boolean kFrontLeftTurningEncoderReversed = true;
-    public static final boolean kBackLeftTurningEncoderReversed = true;
-    public static final boolean kFrontRightTurningEncoderReversed = true;
-    public static final boolean kBackRightTurningEncoderReversed = true;
+    public static final boolean kFrontLeftTurningEncoderReversed = false;
+    public static final boolean kBackLeftTurningEncoderReversed = false;
+    public static final boolean kFrontRightTurningEncoderReversed = false;
+    public static final boolean kBackRightTurningEncoderReversed = false;
 
     public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = true;
     public static final boolean kBackLeftDriveAbsoluteEncoderReversed = true;

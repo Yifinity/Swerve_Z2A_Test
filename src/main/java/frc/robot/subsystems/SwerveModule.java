@@ -43,7 +43,7 @@ public class SwerveModule extends SubsystemBase {
     canCoder = new CANCoder(absoluteEncoderId);
 
     // Sets the offset such that the encoder goes back to -180 degrees at the correct time. 
-    canCoder.configMagnetOffset(Units.degreesToRadians(absoluteEncoderOffset));
+    canCoder.configMagnetOffset(Units.radiansToDegrees(-absoluteEncoderOffset));
 
     driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
     turningMotor = new CANSparkMax(turningMotorId, MotorType.kBrushless);
@@ -116,11 +116,13 @@ public class SwerveModule extends SubsystemBase {
 
     // Ensure that max rotation for turning motor is 90 degrees. 
     state = SwerveModuleState.optimize(state, getState().angle);
-    // driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+    driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     // Clamp our speed to be between -1 and 1. 
-    // turningMotor.set(MathUtil.clamp(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()), -1, 1));
+    turningMotor.set(MathUtil.clamp(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()), -1, 1));
     SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Drive Speed", state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
-    SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Turn Output", turningPidController.calculate(getTurningPosition()));    
+    SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Turn Output", turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));    
+    SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Turn Target", state.angle.getDegrees());    
+    
     SmartDashboard.putString("Swerve[" + driveMotor.getDeviceId() + "] state", state.toString());
   }
   

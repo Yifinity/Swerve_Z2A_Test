@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -125,6 +126,8 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Right Absolute Encoder", backRight.getAbsoluteEncoderRad());
     
     SmartDashboard.putNumber("Front Left Relative Encoder", frontLeft.getTurningPosition());
+    SmartDashboard.putNumber("Front Left Relative Degrees", Units.radiansToDegrees(frontLeft.getTurningPosition()));
+    
     SmartDashboard.putNumber("Front Right Relative Encoder", frontRight.getTurningPosition());
     SmartDashboard.putNumber("Back Left Relative Encoder", backLeft.getTurningPosition());
     SmartDashboard.putNumber("Back Right Relative Encoder", backRight.getTurningPosition());
@@ -152,8 +155,8 @@ public void setModuleStates(SwerveModuleState[] desiredStates) {
   // Makes sure that the speeds are below the max while keeping their relative ratios. 
   SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond); // chiefdelphi.com/t/normalizewheelspeeds/411155
   frontLeft.setDesiredState(desiredStates[0]);
-  // frontRight.setDesiredState(desiredStates[1]);
-  // backLeft.setDesiredState(desiredStates[2]);
-  // backRight.setDesiredState(desiredStates[3]);
+  frontRight.setDesiredState(desiredStates[1]);
+  backLeft.setDesiredState(desiredStates[2]);
+  backRight.setDesiredState(desiredStates[3]);
 }
 }
