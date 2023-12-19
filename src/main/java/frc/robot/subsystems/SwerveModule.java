@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -16,7 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule extends SubsystemBase {
@@ -33,7 +33,7 @@ public class SwerveModule extends SubsystemBase {
   // absolute encoders track the position of the motor regardless of power cycles
   private final CANCoder canCoder;
   private final boolean absoluteEncoderReversed;
-  private final double absoluteEncoderOffsetRad;
+  // private final double absoluteEncoderOffsetRad;
 
   // Public constructor that takes in ids, offsets, and whether the motors are reversed. 
   public SwerveModule(int driveMotorId, int turningMotorId, boolean driveMotorReversed, boolean turningMotorReversed, int absoluteEncoderId, double absoluteEncoderOffset, boolean absoluteEncoderReversed) {
@@ -42,10 +42,12 @@ public class SwerveModule extends SubsystemBase {
     this.absoluteEncoderReversed = absoluteEncoderReversed;
 
     canCoder = new CANCoder(absoluteEncoderId);
+
+    // Sets the offset such that the encoder goes back to -180 degrees at the correct time. 
+    canCoder.configMagnetOffset(Units.degreesToRadians(absoluteEncoderOffset));
+
     driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
     turningMotor = new CANSparkMax(turningMotorId, MotorType.kBrushless);
-
-    canCoder.
 
     driveMotor.setInverted(driveMotorReversed);
     turningMotor.setInverted(turningMotorReversed);
@@ -62,6 +64,8 @@ public class SwerveModule extends SubsystemBase {
 
     // Min and max points are considered to be the same point; encoder values are continous around a full circle
     turningPidController.enableContinuousInput(-Math.PI, Math.PI);
+
+    // Reset encoders to be where the absolute encoder is minus offset. 
     resetEncoders();
   }
 
@@ -84,7 +88,7 @@ public class SwerveModule extends SubsystemBase {
   public double getAbsoluteEncoderRad() {
     double angle = canCoder.getAbsolutePosition(); 
      angle = Units.degreesToRadians(angle);
-     angle -= absoluteEncoderOffsetRad;
+    //  angle -= absoluteEncoderOffsetRad;
     // Set angle to be multiplied by -1 if the it's reversed
     return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
   }
@@ -114,7 +118,8 @@ public class SwerveModule extends SubsystemBase {
     // Ensure that max rotation for turning motor is 90 degrees. 
     state = SwerveModuleState.optimize(state, getState().angle);
     // driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
-    // turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
+    // Clamp our speed to be between -1 and 1. 
+    turningMotor.set(MathUtil.clamp(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()), -1, 1));
     SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] turn", turningPidController.calculate(getTurningPosition()));
     SmartDashboard.putString("Swerve[" + driveMotor.getDeviceId() + "] state", state.toString());
   }
