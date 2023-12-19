@@ -151,8 +151,8 @@ public void setModuleStates(SwerveModuleState[] desiredStates) {
   // https://github.com/SwerveDriveSpecialties/Do-not-use-swerve-template-2021-unmaintained/issues/8
   SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond); // chiefdelphi.com/t/normalizewheelspeeds/411155
   frontLeft.setDesiredState(desiredStates[0]);
-  frontRight.setDesiredState(desiredStates[1]);
-  backLeft.setDesiredState(desiredStates[2]);
-  backRight.setDesiredState(desiredStates[3]);
+  // frontRight.setDesiredState(desiredStates[1]);
+  // backLeft.setDesiredState(desiredStates[2]);
+  // backRight.setDesiredState(desiredStates[3]);
 }
 }

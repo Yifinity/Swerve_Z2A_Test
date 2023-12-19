@@ -117,7 +117,7 @@ public class SwerveModule extends SubsystemBase {
     state = SwerveModuleState.optimize(state, getState().angle);
     // driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     // Clamp our speed to be between -1 and 1. 
-    turningMotor.set(MathUtil.clamp(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()), -1, 1));
+    // turningMotor.set(MathUtil.clamp(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()), -1, 1));
     SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] turn", turningPidController.calculate(getTurningPosition()));
     SmartDashboard.putString("Swerve[" + driveMotor.getDeviceId() + "] state", state.toString());
   }
