@@ -134,10 +134,7 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Left Drive Position", backLeft.getDrivePosition());
     SmartDashboard.putNumber("Back Right Drive Position", backRight.getDrivePosition());
 
-    // SmartDashboard.putNumber("FLTurnPosition", frontLeft.getTurningPosition());
-    // SmartDashboard.putNumber("FRTurnPosition", frontRight.getTurningPosition());
-    // SmartDashboard.putNumber("BLTurnPosition", backLeft.getTurningPosition());
-    // SmartDashboard.putNumber("BRTurnPosition", backRight.getTurningPosition());
+
 
   }
 
@@ -151,6 +148,8 @@ public void stopModules(){
 public void setModuleStates(SwerveModuleState[] desiredStates) {
   // Update desired speeds to be constrained to a max speed. 
   // https://github.com/SwerveDriveSpecialties/Do-not-use-swerve-template-2021-unmaintained/issues/8
+
+  // Makes sure that the speeds are below the max while keeping their relative ratios. 
   SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond); // chiefdelphi.com/t/normalizewheelspeeds/411155
   frontLeft.setDesiredState(desiredStates[0]);
   // frontRight.setDesiredState(desiredStates[1]);

@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule extends SubsystemBase {
@@ -85,7 +86,7 @@ public class SwerveModule extends SubsystemBase {
 
   public double getAbsoluteEncoderRad() {
     double angle = canCoder.getAbsolutePosition(); 
-     angle = Units.degreesToRadians(angle);
+    angle = Units.degreesToRadians(angle);
     //  angle -= absoluteEncoderOffsetRad;
     // Set angle to be multiplied by -1 if the it's reversed
     return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
@@ -106,7 +107,7 @@ public class SwerveModule extends SubsystemBase {
     return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition())); 
   }
 
-    // Method that translate desired state to angle rotations and speed. 
+  // Method that translate desired state to angle rotations and speed. 
   public void setDesiredState(SwerveModuleState state) {
     if (Math.abs(state.speedMetersPerSecond) < 0.001) {
       stop();
@@ -118,7 +119,8 @@ public class SwerveModule extends SubsystemBase {
     // driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     // Clamp our speed to be between -1 and 1. 
     // turningMotor.set(MathUtil.clamp(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()), -1, 1));
-    SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] turn", turningPidController.calculate(getTurningPosition()));
+    SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Drive Speed", state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+    SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Turn Output", turningPidController.calculate(getTurningPosition()));    
     SmartDashboard.putString("Swerve[" + driveMotor.getDeviceId() + "] state", state.toString());
   }
   
