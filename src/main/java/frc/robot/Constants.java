@@ -39,7 +39,6 @@ public final class Constants {
     public static final double kTrackWidth = Units.inchesToMeters(20.5);
     // Distance between right and left wheels
     public static final double kWheelBase = Units.inchesToMeters(27);
-  
     // Distance between front and back wheels
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
             new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
@@ -95,8 +94,7 @@ public final class Constants {
 
 public static final class AutoConstants {
   public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 4;
-  public static final double kMaxAngularSpeedRadiansPerSecond = //
-          DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
+  public static final double kMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
   public static final double kMaxAccelerationMetersPerSecondSquared = 3;
   public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
   public static final double kPXController = 1.5;
