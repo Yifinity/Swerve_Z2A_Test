@@ -56,6 +56,8 @@ public class SwerveSubsystem extends SubsystemBase {
     DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+  // Odemeter to track robot position and create feedback speeds in auto. 
   private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
     DriveConstants.kDriveKinematics, 
     getRotation2d(),
@@ -93,6 +95,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(getHeading()); 
   }
   
+  // Returns position of robot (x, y) using meters. 
   public Pose2d getPose() {
     return odometer.getPoseMeters();
   }
@@ -110,11 +113,14 @@ public class SwerveSubsystem extends SubsystemBase {
   
   @Override
   public void periodic() {
-    odometer.update(getRotation2d(), new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()
+    // Update our odometer with rotation and wheel positions (rotation and drive position).
+    odometer.update(
+      getRotation2d(),
+      new SwerveModulePosition[] {
+        frontLeft.getPosition(),
+        frontRight.getPosition(),
+        backLeft.getPosition(),
+        backRight.getPosition()
     });
 
     SmartDashboard.putNumber("Robot Heading", getHeading());
