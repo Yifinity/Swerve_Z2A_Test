@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -68,6 +69,8 @@ public class SwerveSubsystem extends SubsystemBase {
       backRight.getPosition()
   });
 
+
+  private final Field2d field;
   
   public SwerveSubsystem() {
     // In the constructer, wait a second, then update the gyro (it will have been booted up by then).
@@ -79,6 +82,10 @@ public class SwerveSubsystem extends SubsystemBase {
     
       }
     }).start();
+
+    // Put our field onto smartdashboard. 
+    field = new Field2d();
+    SmartDashboard.putData("Field", field);
   }
 
   public void zeroHeading () {
@@ -146,7 +153,8 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Left Drive Position", backLeft.getDrivePosition());
     SmartDashboard.putNumber("Back Right Drive Position", backRight.getDrivePosition());
 
-
+    // Update our robot's position so we can see it too. 
+    field.setRobotPose(getPose());
 
   }
 
