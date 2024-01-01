@@ -66,7 +66,7 @@ public class RobotContainer {
         new Pose2d(2, -1, Rotation2d.fromDegrees(180)), 
         trajectoryConfig); // Apply trajectory settings to path
 
-      // define pid controllers for tracking trajectory
+      // define pid controllers for tracking trajectory = creates speeds to correct for error. 
       PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
       PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
 
@@ -76,21 +76,22 @@ public class RobotContainer {
         0,
         0,
         AutoConstants.kThetaControllerConstraints);
-
       thetaController.enableContinuousInput(-Math.PI, Math.PI);  
 
       // contruct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         trajectory, 
-        swerveSubsystem::getPose, 
+        swerveSubsystem::getPose, // Coords
         DriveConstants.kDriveKinematics, 
         xController, 
         yController,
         thetaController,
-        swerveSubsystem::setModuleStates,
+        swerveSubsystem::setModuleStates, // Function to translate speeds to the modules
         swerveSubsystem);
-      // add some init and wrap up, and return everything
+
+    // add some init and wrap up, and return everything
     return new SequentialCommandGroup(
+      // Reset odometry to starting pose. 
       new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
       swerveControllerCommand,
       new InstantCommand(() -> swerveSubsystem.stopModules())
