@@ -77,7 +77,7 @@ public class RobotContainer {
         0,
         AutoConstants.kThetaControllerConstraints);
 
-        
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);  
 
       // contruct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
