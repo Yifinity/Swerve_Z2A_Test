@@ -48,25 +48,37 @@ public class RobotContainer {
  
   private void configureBindings() {
     Constants.OperatorConstants.button2.onTrue(resetGyro);
-
   }
 
-  
-  
   public Command getAutonomousCommand() {
-    // create trajectory settings
-    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveConstants.kDriveKinematics);
-    // generate trajectory
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), 
-    List.of(
-      new Translation2d(1, 0),
-      new Translation2d(1, -1)), 
-      new Pose2d(2, -1, Rotation2d.fromDegrees(180)), 
-      trajectoryConfig);
+    // Trajectory Config for settings such as speed. 
+    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+          .setKinematics(DriveConstants.kDriveKinematics);
+
+    // Trajectory Generation using WPILIB
+    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+      new Pose2d(0, 0, new Rotation2d(0)), // Starting Pose
+      List.of(
+        new Translation2d(1, 0),
+        new Translation2d(1, -1)), 
+        new Pose2d(2, -1, Rotation2d.fromDegrees(180)), 
+        trajectoryConfig); // Apply trajectory settings to path
+
       // define pid controllers for tracking trajectory
       PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
       PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-      ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+
+      // Profiled PID Controller = PID Controller with constraints on max speed / acceleration. 
+      ProfiledPIDController thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController,
+        0,
+        0,
+        AutoConstants.kThetaControllerConstraints);
+
+        
+
       // contruct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         trajectory, 
