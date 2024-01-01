@@ -95,7 +95,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(getHeading()); 
   }
   
-  // Returns position of robot (x, y) using meters. 
+  // Returns position of robot (x, y, theta) using meters. 
   public Pose2d getPose() {
     return odometer.getPoseMeters();
   }
@@ -103,12 +103,15 @@ public class SwerveSubsystem extends SubsystemBase {
   // Reset the odometry with the rotation, positions, and current pose. 
   // Reference code: https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-odometry.html
   public void resetOdometry(Pose2d pose) {
-      odometer.resetPosition(getRotation2d(), new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()
-    }, pose);  
+    odometer.resetPosition(
+      getRotation2d(), 
+      new SwerveModulePosition[] {
+        frontLeft.getPosition(),
+        frontRight.getPosition(),
+        backLeft.getPosition(),
+        backRight.getPosition()
+      },
+      pose /* Where the robot is on the field */);  
   }
   
   @Override
