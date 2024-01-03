@@ -122,8 +122,13 @@ public class SwerveModule extends SubsystemBase {
     SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Drive Speed", state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Turn Output", turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));    
     SmartDashboard.putNumber("Swerve[" + turningMotor.getDeviceId() + "] Turn Target", state.angle.getDegrees());    
-    
     SmartDashboard.putString("Swerve[" + driveMotor.getDeviceId() + "] state", state.toString());
+  }
+
+  public double getAmperage(){
+    double a = driveMotor.getOutputCurrent();
+    double b = turningMotor.getOutputCurrent();
+    return a+b;
   }
   
   public void stop() {

@@ -137,6 +137,11 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Left Drive Position", backLeft.getDrivePosition());
     SmartDashboard.putNumber("Back Right Drive Position", backRight.getDrivePosition());
 
+    SmartDashboard.putNumber("Front Left Drive Amps", frontLeft.getAmperage());
+    SmartDashboard.putNumber("Front Right Drive Amps", frontRight.getAmperage());
+    SmartDashboard.putNumber("Back Left Drive Amps", backLeft.getAmperage());
+    SmartDashboard.putNumber("Back Right Drive Amps", backRight.getAmperage());
+
 
 
   }
@@ -159,4 +164,5 @@ public void setModuleStates(SwerveModuleState[] desiredStates) {
   backLeft.setDesiredState(desiredStates[2]);
   backRight.setDesiredState(desiredStates[3]);
 }
+
 }
