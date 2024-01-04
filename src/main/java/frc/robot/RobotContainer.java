@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class RobotContainer {
   private final XboxController xbox = new XboxController(3);
+
   
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final InstantCommand resetGyro = new InstantCommand(swerveSubsystem::zeroHeading, swerveSubsystem);
@@ -47,38 +48,53 @@ public class RobotContainer {
 
  
   private void configureBindings() {
-    Constants.OperatorConstants.button2.onTrue(resetGyro);
-
+    
+    Constants.OperatorConstants.buttonX.onTrue(resetGyro);
+    
   }
 
-  
-  
   public Command getAutonomousCommand() {
-    // create trajectory settings
-    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared).setKinematics(DriveConstants.kDriveKinematics);
-    // generate trajectory
-    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(new Pose2d(0, 0, new Rotation2d(0)), 
-    List.of(
-      new Translation2d(1, 0),
-      new Translation2d(1, -1)), 
-      new Pose2d(2, -1, Rotation2d.fromDegrees(180)), 
-      trajectoryConfig);
-      // define pid controllers for tracking trajectory
+    // Trajectory Config for settings such as speed. 
+    TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+          .setKinematics(DriveConstants.kDriveKinematics);
+
+    // Trajectory Generation using WPILIB
+    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+      new Pose2d(0, 0, new Rotation2d(0)), // Starting Pose
+      List.of(
+        new Translation2d(1, .5), new Translation2d(2, -.5)), 
+        // new Pose2d(3, 0, Rotation2d.fromDegrees(180)),
+        new Pose2d(3, 0, Rotation2d.fromDegrees(0)),
+        trajectoryConfig); // Apply trajectory settings to path
+
+      // define pid controllers for tracking trajectory = creates speeds to correct for error. 
       PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
       PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
-      ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+
+      // Profiled PID Controller = PID Controller with constraints on max speed / acceleration. 
+      ProfiledPIDController thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController,
+        0,
+        0,
+        AutoConstants.kThetaControllerConstraints);
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);  
+
       // contruct command to follow trajectory
       SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
         trajectory, 
-        swerveSubsystem::getPose, 
+        swerveSubsystem::getPose, // Coords
         DriveConstants.kDriveKinematics, 
         xController, 
         yController,
         thetaController,
-        swerveSubsystem::setModuleStates,
+        swerveSubsystem::setModuleStates, // Function to translate speeds to the modules
         swerveSubsystem);
-      // add some init and wrap up, and return everything
+
+    // add some init and wrap up, and return everything
     return new SequentialCommandGroup(
+      // Reset odometry to starting pose. 
       new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
       swerveControllerCommand,
       new InstantCommand(() -> swerveSubsystem.stopModules())

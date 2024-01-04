@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -56,6 +57,8 @@ public class SwerveSubsystem extends SubsystemBase {
     DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
   private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+
+  // Odemeter to track robot position and create feedback speeds in auto. 
   private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
     DriveConstants.kDriveKinematics, 
     getRotation2d(),
@@ -66,6 +69,8 @@ public class SwerveSubsystem extends SubsystemBase {
       backRight.getPosition()
   });
 
+
+  private final Field2d field;
   
   public SwerveSubsystem() {
     // In the constructer, wait a second, then update the gyro (it will have been booted up by then).
@@ -77,6 +82,10 @@ public class SwerveSubsystem extends SubsystemBase {
     
       }
     }).start();
+
+    // Put our field onto smartdashboard. 
+    field = new Field2d();
+    SmartDashboard.putData("Field", field);
   }
 
   public void zeroHeading () {
@@ -93,6 +102,7 @@ public class SwerveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(getHeading()); 
   }
   
+  // Returns position of robot (x, y, theta) using meters. 
   public Pose2d getPose() {
     return odometer.getPoseMeters();
   }
@@ -100,21 +110,27 @@ public class SwerveSubsystem extends SubsystemBase {
   // Reset the odometry with the rotation, positions, and current pose. 
   // Reference code: https://docs.wpilib.org/en/stable/docs/software/kinematics-and-odometry/swerve-drive-odometry.html
   public void resetOdometry(Pose2d pose) {
-      odometer.resetPosition(getRotation2d(), new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()
-    }, pose);  
+    odometer.resetPosition(
+      getRotation2d(), 
+      new SwerveModulePosition[] {
+        frontLeft.getPosition(),
+        frontRight.getPosition(),
+        backLeft.getPosition(),
+        backRight.getPosition()
+      },
+      pose /* Where the robot is on the field */);  
   }
   
   @Override
   public void periodic() {
-    odometer.update(getRotation2d(), new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()
+    // Update our odometer with rotation and wheel positions (rotation and drive position).
+    odometer.update(
+      getRotation2d(),
+      new SwerveModulePosition[] {
+        frontLeft.getPosition(),
+        frontRight.getPosition(),
+        backLeft.getPosition(),
+        backRight.getPosition()
     });
 
     SmartDashboard.putNumber("Robot Heading", getHeading());
@@ -138,6 +154,8 @@ public class SwerveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Back Right Drive Position", backRight.getDrivePosition());
 
 
+    // Update our robot's position so we can see it too. 
+    field.setRobotPose(getPose());
 
   }
 
