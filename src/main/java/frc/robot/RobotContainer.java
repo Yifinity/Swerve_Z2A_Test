@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 
 public class RobotContainer {
   private final XboxController xbox = new XboxController(3);
+
   
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final InstantCommand resetGyro = new InstantCommand(swerveSubsystem::zeroHeading, swerveSubsystem);
@@ -47,7 +48,9 @@ public class RobotContainer {
 
  
   private void configureBindings() {
-    Constants.OperatorConstants.button2.onTrue(resetGyro);
+    
+    Constants.OperatorConstants.buttonX.onTrue(resetGyro);
+    
   }
 
   public Command getAutonomousCommand() {
@@ -61,9 +64,9 @@ public class RobotContainer {
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
       new Pose2d(0, 0, new Rotation2d(0)), // Starting Pose
       List.of(
-        new Translation2d(1, 0),
-        new Translation2d(1, -1)), 
-        new Pose2d(2, -1, Rotation2d.fromDegrees(180)), 
+        new Translation2d(1, .5), new Translation2d(2, -.5)), 
+        // new Pose2d(3, 0, Rotation2d.fromDegrees(180)),
+        new Pose2d(3, 0, Rotation2d.fromDegrees(0)),
         trajectoryConfig); // Apply trajectory settings to path
 
       // define pid controllers for tracking trajectory = creates speeds to correct for error. 

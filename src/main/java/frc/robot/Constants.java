@@ -38,7 +38,7 @@ public final class Constants {
   public static final class DriveConstants {
     public static final double kTrackWidth = Units.inchesToMeters(20.5);
     // Distance between right and left wheels
-    public static final double kWheelBase = Units.inchesToMeters(27);
+    public static final double kWheelBase = Units.inchesToMeters(26.5);
   
     // Distance between front and back wheels
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -95,13 +95,13 @@ public final class Constants {
 
 public static final class AutoConstants {
   public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 4;
-  public static final double kMaxAngularSpeedRadiansPerSecond = DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
-
+  public static final double kMaxAngularSpeedRadiansPerSecond = //
+          DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
   public static final double kMaxAccelerationMetersPerSecondSquared = 3;
   public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
   public static final double kPXController = 1.5;
   public static final double kPYController = 1.5;
-  public static final double kPThetaController = 3;
+  public static final double kPThetaController = 3.75;
 
   public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
           new TrapezoidProfile.Constraints(
@@ -125,5 +125,6 @@ public static final class OIConstants {
     public static final Joystick auxStick = new Joystick(0);
     public static final JoystickButton button2 = new JoystickButton(auxStick, 2);
     public static final XboxController xbox = new XboxController(3);
+    public static final JoystickButton buttonX = new JoystickButton(xbox, 3);
   }
 }
