@@ -120,7 +120,7 @@ public static final class OIConstants {
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
-    public static final Joystick auxStick = new Joystick(0);
+    public static final Joystick auxStick = new Joystick(1);
     public static final JoystickButton button2 = new JoystickButton(auxStick, 2);
     public static final XboxController xbox = new XboxController(3);
   }

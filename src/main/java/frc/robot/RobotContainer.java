@@ -39,10 +39,10 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final InstantCommand resetGyro = new InstantCommand(swerveSubsystem::zeroHeading, swerveSubsystem);
   private final SwerveJoystickCMD swerveCMD = new SwerveJoystickCMD(swerveSubsystem,
-                () -> -xbox.getRawAxis(OIConstants.kDriverYAxis),
-                () -> xbox.getRawAxis(OIConstants.kDriverXAxis),
-                () -> xbox.getRawAxis(OIConstants.kDriverRotAxis),
-                () -> !xbox.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx));
+                () -> -Constants.OperatorConstants.auxStick.getY(),
+                () -> Constants.OperatorConstants.auxStick.getX(),
+                () -> Constants.OperatorConstants.auxStick.getZ(),
+                () -> true);
 
   public RobotContainer() {
     CommandScheduler.getInstance().setDefaultCommand(swerveSubsystem, swerveCMD);
