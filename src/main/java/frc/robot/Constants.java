@@ -86,20 +86,20 @@ public final class Constants {
     public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
-    public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
+    public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 3;
     public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
-            kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
+            kPhysicalMaxAngularSpeedRadiansPerSecond / 3;
     public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
     public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
 }
 
 public static final class AutoConstants {
-  public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 4;
+  public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 3;
   public static final double kMaxAngularSpeedRadiansPerSecond = //
           DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
   public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-  public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
-  public static final double kPXController = 1.5;
+  public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 3;
+  public static final double kPXController = 1.75;
   public static final double kPYController = 1.5;
   public static final double kPThetaController = 3.75;
 

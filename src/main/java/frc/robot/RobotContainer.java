@@ -64,9 +64,9 @@ public class RobotContainer {
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
       new Pose2d(0, 0, new Rotation2d(0)), // Starting Pose
       List.of(
-        new Translation2d(1, .5), new Translation2d(2, -.5)), 
+        new Translation2d(1, -0.5), new Translation2d(2, 0.5)), 
         // new Pose2d(3, 0, Rotation2d.fromDegrees(180)),
-        new Pose2d(3, 0, Rotation2d.fromDegrees(0)),
+        new Pose2d(3, 0, new Rotation2d(Math.round(180 * (Math.PI/180)))),
         trajectoryConfig); // Apply trajectory settings to path
 
       // define pid controllers for tracking trajectory = creates speeds to correct for error. 

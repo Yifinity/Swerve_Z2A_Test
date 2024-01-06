@@ -46,7 +46,9 @@ public class SwerveModule extends SubsystemBase {
     canCoder.configMagnetOffset(Units.radiansToDegrees(-absoluteEncoderOffset));
 
     driveMotor = new CANSparkMax(driveMotorId, MotorType.kBrushless);
+    driveMotor.setSmartCurrentLimit(30);
     turningMotor = new CANSparkMax(turningMotorId, MotorType.kBrushless);
+    turningMotor.setSmartCurrentLimit(30);
 
     driveMotor.setInverted(driveMotorReversed);
     turningMotor.setInverted(turningMotorReversed);
@@ -116,6 +118,10 @@ public class SwerveModule extends SubsystemBase {
 
     // Ensure that max rotation for turning motor is 90 degrees. 
     state = SwerveModuleState.optimize(state, getState().angle);
+    if(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond > 1){
+      System.out.println("over max speed");
+    } 
+     
     driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
     // Clamp our speed to be between -1 and 1. 
     turningMotor.set(MathUtil.clamp(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()), -1, 1));
